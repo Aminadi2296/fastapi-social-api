@@ -38,7 +38,7 @@ async def create_new_post(
     db.refresh(new_post)
     return new_post
 
-@app.get("/posts/search")
+@app.get("/posts/search", tags=["posts"])
 def search_posts(
     limit: int = 10,
     skip: int = 0,
