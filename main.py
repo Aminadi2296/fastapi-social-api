@@ -22,7 +22,7 @@ def login(user_credentials: OAuth2PasswordRequestForm = Depends(), db: Session =
     token = oauth2.create_access_token(data={"user_id": user.id})
     return {"access_token": token, "token_type": "bearer"}
 
-@app.post("/posts", status_code=status.HTTP_201_CREATED, response_model=schemas.PostOut)
+@app.post("/posts", status_code=status.HTTP_201_CREATED, response_model=schemas.PostOut, tags=["posts"])
 async def create_new_post(
     post: PostCreate,
     db: Session = Depends(get_db),
@@ -47,11 +47,11 @@ def search_posts(
     posts = db.query(models.Post).offset(skip).limit(limit).all()
     return {"count": len(posts), "limit": limit, "skip": skip, "data": posts}
 
-@app.get("/posts", response_model=list[schemas.PostOut])
+@app.get("/posts", response_model=list[schemas.PostOut], tags=["posts"])
 def get_posts(db: Session = Depends(get_db)):
     return db.query(models.Post).all()
 
-@app.get("/posts/{id}", response_model=schemas.PostOut)
+@app.get("/posts/{id}", response_model=schemas.PostOut, tags=["posts"])
 def get_post_by_id(id: int, db: Session = Depends(get_db)):
     post = db.query(models.Post).filter(models.Post.id == id).first()
     if not post:
@@ -59,7 +59,7 @@ def get_post_by_id(id: int, db: Session = Depends(get_db)):
                             detail=f"Post with id {id} not found")
     return post
 
-@app.put("/posts/{id}", response_model=schemas.PostOut)
+@app.put("/posts/{id}", response_model=schemas.PostOut, tags=["posts"])
 def put_post_by_id(
     id: int,
     post: PostCreate,
@@ -78,7 +78,7 @@ def put_post_by_id(
     db.commit()
     return post_query.first()
 
-@app.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT, tags=["posts"])
 def delete_post_by_id(
     id: int,
     db: Session = Depends(get_db),
@@ -94,7 +94,7 @@ def delete_post_by_id(
     db.delete(post)
     db.commit()
 
-@app.post("/users", status_code=status.HTTP_201_CREATED, response_model=schemas.UserOut)
+@app.post("/users", status_code=status.HTTP_201_CREATED, response_model=schemas.UserOut, tags=["users"])
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     hashed_pwd = utils.hash(user.password)
     new_user = models.User(email=user.email, password=hashed_pwd)
