@@ -3,19 +3,24 @@ services:
     build: .
     ports:
       - "8000:8000"
-    env_file:
-      - .env
     depends_on:
       - postgres
     environment:
       - DB_HOSTNAME=postgres
+      - DB_PORT=5432
+      - DB_NAME=practice_db
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=admin123
+      - SECRET_KEY=fde71533ff2db5c940281a1e260eb8e253424c000fbcf0b41bfaff1dea9be2b1
+      - ALGORITHM=HS256
+      - ACCESS_TOKEN_EXPIRE_MINUTES=30
 
   postgres:
     image: postgres:15
     environment:
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: practice_db
+      POSTGRES_USER: postgres
     ports:
       - "5433:5432"
     volumes:
@@ -23,4 +28,3 @@ services:
 
 volumes:
   postgres_data:
-
